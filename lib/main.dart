@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget{
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => locator<TodoTasks>(),)
-      ],
+      ChangeNotifierProvider(create: (_) => locator<TodoTasks>(),)
+    ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             home: HomeScreen(),

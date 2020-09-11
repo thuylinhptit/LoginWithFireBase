@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:login_firebase/todo_app/history.dart';
 import 'package:login_firebase/todo_app/todo_tasks.dart';
 import 'package:provider/provider.dart';
 import 'todoscreen.dart';
@@ -25,7 +26,7 @@ class _BottomNavigaton extends State<BottomNavigation>{
           centerTitle: true,
           title: Text('Stats', style: TextStyle(fontSize: 25),
           ),
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: Colors.pink[300],
         ),
         body: Center(
           child: Consumer<TodoTasks>(
@@ -56,40 +57,37 @@ class _BottomNavigaton extends State<BottomNavigation>{
       ),
     ),
      Center(
-//       child: Consumer<TodoTasks> (
-//
-//       ),
-
+       child: History(),
      )
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-            child: _widgetOptions.elementAt(_selectedIndex)
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem> [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.apps),
-                title: Text('Todos', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.arrow_back),
-                title: Text('Stats', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.redo),
-              title: Text('History', style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
-            )
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.white,
-          backgroundColor: Colors.lightBlueAccent,
-          onTap: _onTapItem,
-        ),
-    );
+    return  Scaffold(
+          body: Center(
+              child: _widgetOptions.elementAt(_selectedIndex)
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem> [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.apps),
+                  title: Text('Todos', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.arrow_back),
+                  title: Text('Stats', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.redo),
+                title: Text('History', style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),)
+              )
+            ],
+            currentIndex: _selectedIndex,
+            selectedItemColor: Colors.white,
+            backgroundColor: Colors.pink[300],
+            onTap: _onTapItem,
+          ),
+      );
 
   }
 

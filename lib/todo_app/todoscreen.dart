@@ -23,7 +23,7 @@ class _TodoScreen extends State<TodoScreen> {
         Scaffold(
           appBar: AppBar(
             title: Text('App To Do', style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600 , color: Colors.white),),
-            backgroundColor: Colors.lightBlueAccent,
+            backgroundColor: Colors.pink[300],
             actions: <Widget> [
               Consumer<TodoTasks>(
                 builder: (context, model, _) {
@@ -39,7 +39,7 @@ class _TodoScreen extends State<TodoScreen> {
                             || choice.index == 2 && model.status == TodoStatus.incompleteTasks
                             || choice.index == 3 && model.status == TodoStatus.completedtask
                         ) {
-                          color= Colors.blue;
+                          color= Colors.pink[200];
                         }
                         return PopupMenuItem<Choice>(
                             value: choice,
@@ -77,7 +77,7 @@ class _TodoScreen extends State<TodoScreen> {
             padding: const EdgeInsets.fromLTRB(0, 0, 10, 20),
             child: FloatingActionButton(
               child: Icon(Icons.add),
-              backgroundColor: Colors.lightBlueAccent,
+              backgroundColor: Colors.pinkAccent,
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute( builder: (context) => AddTask()) );
               },

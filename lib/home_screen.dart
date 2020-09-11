@@ -1,9 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login_firebase/register.dart';
+import 'package:login_firebase/todo_app/bottomnavgation.dart';
+import 'package:login_firebase/todo_app/locator.dart';
+import 'package:login_firebase/todo_app/todo_tasks.dart';
 import 'package:login_firebase/todo_app/todoscreen.dart';
+import 'package:provider/provider.dart';
+
+import 'api.dart';
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -182,7 +189,9 @@ class _HomeScreen extends State<HomeScreen>{
           print("email chua duoc xac thuc");
         } else {
           print("dang nhap thanh cong");
-          Navigator.push(context, MaterialPageRoute(builder: (context) => TodoScreen()));
+          locator<Api>().ref =  FirebaseFirestore.instance.collection(userCredential.user.uid);
+          await Provider.of<TodoTasks>(context, listen: false).login();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
         }
 
       } on FirebaseAuthException catch (e) {

@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login_firebase/todo_app/todoscreen.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -176,6 +177,7 @@ class _Register extends State<Register> {
                 email: _email.text.toString(),
                 password: _password.text.toString());
         await userCredential.user.sendEmailVerification();
+        Navigator.push(context, MaterialPageRoute ( builder:(context) => TodoScreen()));
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');

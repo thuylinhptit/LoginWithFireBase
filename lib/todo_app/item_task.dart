@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:login_firebase/todo_app/edit_task.dart';
 import 'package:login_firebase/todo_app/todo_tasks.dart';
 import 'package:login_firebase/todo_app/add_task.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +21,29 @@ class ItemTask extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    Color _color;
+    var rm = new Random();
+    var rng;
+    for (var i = 0; i < 1; i++) {
+      rng = (rm.nextInt(5));
+    }
+    if( rng == 0 ){
+      _color = Colors.pinkAccent;
+    }
+    else if( rng == 1 ){
+      _color = Colors.lightGreen;
+    }
+    else if( rng == 2 ){
+      _color = Colors.orangeAccent;
+    }
+    else if( rng == 3 ){
+      _color = Colors.purpleAccent;
+    }
+    else {
+      _color = Colors.lightBlueAccent;
+    }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(5, 3, 0, 0),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 13),
       child: Slidable(
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
@@ -37,7 +59,22 @@ class ItemTask extends StatelessWidget{
               task.title, style: TextStyle( fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black),
             ),
           ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              stops: [0.015, 0.015],
+              colors: [_color, Colors.white],
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(9.0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.pink[200],
+                blurRadius: 5.0,
 
+              ),
+            ],
+          ),
         ),
         actions: <Widget> [
           IconSlideAction(
@@ -50,7 +87,7 @@ class ItemTask extends StatelessWidget{
             caption: 'Edit',
             color: Colors.blue,
             icon: Icons.edit,
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTask(task: task, index: index,),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditTask(task: task, index: index,),
               fullscreenDialog: true,)),
             closeOnTap: false,
           ),
@@ -74,9 +111,16 @@ class ItemTask extends StatelessWidget{
               FlatButton(
                   child: Text('Delete'),
                   onPressed: () {
-                   // task.isDelete  = true;
-                    taskProvider.delete(task.id);
-                    Navigator.of(context).pop(true);
+                    if( task.isDeleted == false ){
+                      task.isDeleted = true;
+                      taskProvider.deleteTask(task, task.id);
+                      Navigator.of(context).pop(true);
+                    }
+                    else{
+                      task.isDeleted = true;
+                      taskProvider.delete(task, task.id);
+                      Navigator.of(context).pop(true);
+                    }
                   }
               )
             ],
