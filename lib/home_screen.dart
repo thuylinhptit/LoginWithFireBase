@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_firebase/register.dart';
 import 'package:login_firebase/todo_app/bottomnavgation.dart';
 import 'package:login_firebase/todo_app/locator.dart';
@@ -12,15 +13,23 @@ import 'package:provider/provider.dart';
 
 import 'api.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
   @override
   _HomeScreen createState() => _HomeScreen();
-
 }
+bool isSignIn;
 class _HomeScreen extends State<HomeScreen>{
+  bool isLoad = false;
   DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    isSignIn = false;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,10 +38,10 @@ class _HomeScreen extends State<HomeScreen>{
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             colors: [
-              Colors.pink[400],
+              Colors.red[300],
               Colors.pink[300],
               Colors.pink[200],
-            ]
+              ]
           )
         ),
         child: SingleChildScrollView(
@@ -90,7 +99,7 @@ class _HomeScreen extends State<HomeScreen>{
                                 child: TextField(
                                   controller: _email,
                                   decoration: InputDecoration(
-                                    hintText: 'Enter your username',
+                                    hintText: 'Enter your email',
                                     hintStyle: TextStyle(color: Colors.grey),
                                     border: InputBorder.none
                                   ),
@@ -118,13 +127,16 @@ class _HomeScreen extends State<HomeScreen>{
                         FlatButton(
                           onPressed: () {
                             onLogin();
+                            setState(() {
+                              isLoad = true;
+                            });
                           },
                           child: Container(
                             height: 50,
                             margin: EdgeInsets.symmetric(horizontal: 40),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.pink[400]
+                                color: Colors.pink[300]
                             ),
                             child: Center(
                               child: Text(
@@ -135,7 +147,13 @@ class _HomeScreen extends State<HomeScreen>{
                         ),
                         SizedBox(height: 20,),
                         FlatButton(
-                          onPressed: onLogin,
+                          onPressed: () {
+                            SignIn();
+                            print("Press");
+                            setState(() {
+                              isLoad = true;
+                            });
+                          },
                           child: Container(
                             height: 50,
                             margin: EdgeInsets.symmetric(horizontal: 40),
@@ -145,7 +163,7 @@ class _HomeScreen extends State<HomeScreen>{
                             ),
                             child: Center(
                               child: Text(
-                                'Sign in with email', style: TextStyle( color: Colors.white, fontSize: 18),
+                                'Sign in with Google', style: TextStyle( color: Colors.white, fontSize: 18),
                               ),
                             ),
                           ),
@@ -158,18 +176,27 @@ class _HomeScreen extends State<HomeScreen>{
                               "I'm a new user, ", style: TextStyle( color:  Colors.black, fontSize: 15),
                             ),
                             GestureDetector(
-                              onTap: () => Navigator.push(context, MaterialPageRoute ( builder:(context) => Register())),
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute ( builder:(context) => Register()));
+                                final snackBar = SnackBar(
+                                  content: Text('Check email'),);
+                                Scaffold.of(context).showSnackBar(snackBar);
+                              },
                               child: Text(
                                 "Sign up", style: TextStyle( color: Colors.pink[300], fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
+                        ),
+                        Center(
+                            child: isLoad == true ? CircularProgressIndicator() : Container()
                         )
                       ],
                     ),
+
                   ),
                 ),
-//              ),
+
             ],
           ),
         ),
@@ -179,6 +206,7 @@ class _HomeScreen extends State<HomeScreen>{
   }
 
   void onLogin() async{
+
     if( _email != null && _password != null ){
       try {
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -186,9 +214,13 @@ class _HomeScreen extends State<HomeScreen>{
             password: _password.text.toString()
         );
         if(!userCredential.user.emailVerified) {
+          final snackBar = SnackBar(
+            content: Text('email chua duoc xac thuc!!'),);
+          Scaffold.of(context).showSnackBar(snackBar);
           print("email chua duoc xac thuc");
         } else {
           print("dang nhap thanh cong");
+          isSignIn = true;
           locator<Api>().ref =  FirebaseFirestore.instance.collection(userCredential.user.uid);
           await Provider.of<TodoTasks>(context, listen: false).login();
           Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
@@ -206,4 +238,25 @@ class _HomeScreen extends State<HomeScreen>{
   }
 
 
+  Future<void> handleSignIn() async{
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+    AuthCredential credential = GoogleAuthProvider
+        .credential(idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+
+    final User user = (await _auth.signInWithCredential(credential)).user;
+    isSignIn = true;
+    return user;
+  }
+  void SignIn(){
+    if( isSignIn == true ){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigation()));
+      print("OK");
+    }
+    else{
+      Navigator.push(context, MaterialPageRoute ( builder:(context) => Register()));
+      print("False");
+    }
+  }
 }

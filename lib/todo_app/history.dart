@@ -14,7 +14,8 @@ class _History extends State<History>{
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pink[300],
+        centerTitle: true,
+        backgroundColor: Colors.pink[200],
         title: Text(
           "History", style: TextStyle( color: Colors.white, fontSize: 20),
         ),

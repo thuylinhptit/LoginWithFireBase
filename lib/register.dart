@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login_firebase/home_screen.dart';
 import 'package:login_firebase/todo_app/todoscreen.dart';
 
 class Register extends StatefulWidget {
@@ -13,7 +14,7 @@ class _Register extends State<Register> {
   var username;
   var password;
   var email;
-  int _id = 0;
+  bool isLoad = false;
   final databaseReference = FirebaseDatabase.instance.reference();
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -26,11 +27,11 @@ class _Register extends State<Register> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.topCenter, colors: [
-          Colors.pink[400],
-          Colors.pink[300],
-          Colors.pink[200],
-        ])),
+            gradient: LinearGradient(begin: Alignment.topCenter,  colors: [
+              Colors.red[300],
+              Colors.pink[300],
+              Colors.pink[200],
+            ])),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +139,7 @@ class _Register extends State<Register> {
                         ),
                       ),
                       SizedBox(
-                        height: 80,
+                        height: 40,
                       ),
                       FlatButton(
                         child: Container(
@@ -146,7 +147,7 @@ class _Register extends State<Register> {
                           margin: EdgeInsets.symmetric(horizontal: 40),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: Colors.pink[400]),
+                              color: Colors.pink[300]),
                           child: Center(
                             child: Text(
                               'Register',
@@ -155,13 +156,20 @@ class _Register extends State<Register> {
                             ),
                           ),
                         ),
-                        onPressed: onRegister,
+                        onPressed: (){
+                          onRegister();
+                          setState(() {
+                            isLoad = true;
+                          });
+                        }
                       ),
+                      Center(
+                          child: isLoad == true ? CircularProgressIndicator() : Container()
+                      )
                     ],
                   ),
                 ),
               ),
-//              ),
             ],
           ),
         ),
@@ -170,6 +178,7 @@ class _Register extends State<Register> {
   }
 
   void onRegister() async {
+    Navigator.push(context, MaterialPageRoute ( builder:(context) => HomeScreen()));
     if (_username != null && _password != null) {
       try {
         UserCredential userCredential = await FirebaseAuth.instance
@@ -177,7 +186,6 @@ class _Register extends State<Register> {
                 email: _email.text.toString(),
                 password: _password.text.toString());
         await userCredential.user.sendEmailVerification();
-        Navigator.push(context, MaterialPageRoute ( builder:(context) => TodoScreen()));
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           print('The password provided is too weak.');

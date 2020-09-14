@@ -26,7 +26,7 @@ class _BottomNavigaton extends State<BottomNavigation>{
           centerTitle: true,
           title: Text('Stats', style: TextStyle(fontSize: 25),
           ),
-          backgroundColor: Colors.pink[300],
+          backgroundColor: Colors.pink[200],
         ),
         body: Center(
           child: Consumer<TodoTasks>(
@@ -84,7 +84,7 @@ class _BottomNavigaton extends State<BottomNavigation>{
             ],
             currentIndex: _selectedIndex,
             selectedItemColor: Colors.white,
-            backgroundColor: Colors.pink[300],
+            backgroundColor: Colors.pink[200],
             onTap: _onTapItem,
           ),
       );

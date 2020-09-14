@@ -1,9 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:login_firebase/home_screen.dart';
 import 'package:login_firebase/todo_app/add_task.dart';
 import 'package:login_firebase/todo_app/list_task.dart';
 import 'package:login_firebase/todo_app/todo_tasks.dart';
+import 'package:login_firebase/user.dart';
 import 'package:provider/provider.dart';
 
 
@@ -11,8 +13,8 @@ class TodoScreen extends StatefulWidget{
   @override
   _TodoScreen createState() => _TodoScreen();
 
-
 }
+User user;
 class _TodoScreen extends State<TodoScreen> {
 
   @override
@@ -39,7 +41,7 @@ class _TodoScreen extends State<TodoScreen> {
                             || choice.index == 2 && model.status == TodoStatus.incompleteTasks
                             || choice.index == 3 && model.status == TodoStatus.completedtask
                         ) {
-                          color= Colors.pink[200];
+                          color= Colors.pink[300];
                         }
                         return PopupMenuItem<Choice>(
                             value: choice,
@@ -65,6 +67,17 @@ class _TodoScreen extends State<TodoScreen> {
                 },
 
               ),
+              IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute( builder: (context) => HomeScreen()));
+                  user.username = "";
+                  user.pass = "";
+                  final snackBar = SnackBar(
+                      content: Text('Log Out!!'),);
+                  Scaffold.of(context).showSnackBar(snackBar);
+                }
+              )
             ],
           ),
 
@@ -77,9 +90,12 @@ class _TodoScreen extends State<TodoScreen> {
             padding: const EdgeInsets.fromLTRB(0, 0, 10, 20),
             child: FloatingActionButton(
               child: Icon(Icons.add),
-              backgroundColor: Colors.pinkAccent,
+              backgroundColor: Colors.pink[300],
               onPressed: (){
                 Navigator.push(context, MaterialPageRoute( builder: (context) => AddTask()) );
+                final snackBar = SnackBar(
+                  content: Text('Add Task!!'),);
+                Scaffold.of(context).showSnackBar(snackBar);
               },
             ),
           ),

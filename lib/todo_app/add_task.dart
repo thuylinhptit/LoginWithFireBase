@@ -19,6 +19,7 @@ class AddTask extends StatefulWidget {
 class _AddTask extends State<AddTask> {
   final taskTextController = TextEditingController();
   bool statusDone = false;
+  bool statusDeleted = false ;
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _AddTask extends State<AddTask> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Add Task'),
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: Colors.red[300],
       ),
       body: ListView(
         children: <Widget>[
@@ -61,7 +62,7 @@ class _AddTask extends State<AddTask> {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: RaisedButton(
-                      color: Colors.lightBlueAccent,
+                      color: Colors.red[300],
                       child: Text('Add'),
                       onPressed: onSubmit,
                     ),
@@ -79,23 +80,14 @@ class _AddTask extends State<AddTask> {
   Future<void> onSubmit() async {
     final String tasktext = taskTextController.text;
     final bool isdone = statusDone;
+    final bool isDeleted = statusDeleted;
     final taskProvider = Provider.of<TodoTasks>(context, listen:  false);
-
-    // Edit
-    if (widget.task != null && widget.index != null) {
-      Task todo = Task(
-          title: taskTextController.text,
-          isdone: widget.task.isdone,
-          id: widget.task.id);
-      await taskProvider.updateTask(todo, widget.task.id.toString());
-      Navigator.pop(context);
-      return;
-    }
     //Add
     if (tasktext.isNotEmpty) {
       Task todo = Task(
         title: tasktext,
         isdone: isdone,
+        isDeleted: isDeleted,
       );
       print("${tasktext.toString()}");
       await taskProvider.addTask(todo);
